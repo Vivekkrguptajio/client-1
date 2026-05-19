@@ -69,8 +69,14 @@ export function DisplayAds({
   // Performance table filtered data
   const perfHeaders = perfData.length > 0
     ? Object.keys(perfData[0]).filter(h => {
-        const lh = h.toLowerCase();
-        return !(lh.includes('order') && lh.includes('sku'));
+        const lh = h.toLowerCase().trim();
+        const isRepeatedMetric = 
+          lh === 'ad spend' || lh === 'adspend' || lh === 'spend' ||
+          lh === 'impressions' || lh === 'impr' ||
+          lh === 'clicks' ||
+          lh === 'ctr' || lh.includes('click-through') ||
+          lh === 'cpm' || lh === 'cpc';
+        return !(lh.includes('order') && lh.includes('sku')) && !isRepeatedMetric;
       })
     : [];
   const filteredPerfData = perfSearch
