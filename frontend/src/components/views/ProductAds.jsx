@@ -51,6 +51,14 @@ export function ProductAds({
   metricChanges
 }) {
 
+  // Compute the actual visible table data (respecting Low Performing filter)
+  const visibleTableData = showLowPerforming
+    ? tableData.filter(row => {
+        const roasVal = parseFloat(row['ROAS'] || row['roas'] || row['Roas'] || 999);
+        return roasVal < 2;
+      })
+    : tableData;
+
   return (
     <main className="flex-1 p-6 max-w-[1600px] w-full mx-auto">
       {/* METRICS GRID */}
@@ -240,14 +248,14 @@ export function ProductAds({
           
           <div className="flex flex-wrap items-center gap-4">
             <span className="text-sm font-medium text-white">
-              {tableData.length} records
+              {visibleTableData.length} records
             </span>
             
             <div className="flex items-center gap-2">
                <button onClick={handleRefresh} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
                  <RefreshCw className="w-4 h-4" />
                </button>
-               <button onClick={() => exportToExcel(tableData, 'ProductAds_Campaign_Data')} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
+               <button onClick={() => exportToExcel(visibleTableData, 'ProductAds_Performance_Data')} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
                  <Download className="w-4 h-4" />
                </button>
             </div>

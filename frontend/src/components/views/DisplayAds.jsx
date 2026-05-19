@@ -72,6 +72,14 @@ export function DisplayAds({
     ? perfData.filter(row => Object.values(row).some(v => v && v.toString().toLowerCase().includes(perfSearch.toLowerCase())))
     : perfData;
 
+  // Apply Low Performing filter for download and record count
+  const visiblePerfData = showLowPerforming
+    ? filteredPerfData.filter(row => {
+        const roasVal = parseFloat(row['ROAS'] || row['roas'] || row['Roas'] || 999);
+        return roasVal < 2;
+      })
+    : filteredPerfData;
+
   return (
     <main className="flex-1 p-6 max-w-[1600px] w-full mx-auto">
 
@@ -170,12 +178,12 @@ export function DisplayAds({
 
           <div className="flex flex-wrap items-center gap-4">
             <span className="text-sm font-medium text-white">
-              {filteredPerfData.length} records
+              {visiblePerfData.length} records
             </span>
 
             <div className="flex items-center gap-2">
               <button className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors"><RefreshCw className="w-4 h-4" /></button>
-              <button onClick={() => exportToExcel(filteredPerfData, 'DisplayAds_Performance_Table')} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors"><Download className="w-4 h-4" /></button>
+              <button onClick={() => exportToExcel(visiblePerfData, 'DisplayAds_Performance_Data')} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors"><Download className="w-4 h-4" /></button>
             </div>
 
             {/* Low Performing Toggle */}
