@@ -98,7 +98,7 @@ export default function App() {
         const prodJson = XLSX.utils.sheet_to_json(prodWb.Sheets[prodWb.SheetNames[0]]);
         setProductData(prodJson);
         setProductFileName('snitch.xlsx');
-        
+
         // Set initial date anchor based on default data
         let maxDate = null;
         prodJson.forEach(row => {
@@ -433,13 +433,15 @@ export default function App() {
   };
 
   const rawHeaders = productData.length > 0 ? Object.keys(productData[0]) : [];
-  const dateCol = rawHeaders.find(h => h.toLowerCase().includes('date') || h.toLowerCase() === 'day');
+  const dateCol = rawHeaders.find(h => h.toLowerCase() === 'creation date') || rawHeaders.find(h => h.toLowerCase().includes('date') || h.toLowerCase() === 'day');
   const campCol = rawHeaders.find(h => h.toLowerCase().includes('campaign') || h.toLowerCase() === 'name');
   const statusCol = rawHeaders.find(h => h.toLowerCase() === 'status');
+  // Exclude raw 'Date' column since we use 'Creation Date' instead
+  const excludedCols = rawHeaders.filter(h => h.toLowerCase() === 'date' && dateCol && dateCol.toLowerCase() === 'creation date');
 
   const orderedHeaders = [dateCol, campCol, statusCol].filter(Boolean);
   rawHeaders.forEach(h => {
-    if (!orderedHeaders.includes(h)) orderedHeaders.push(h);
+    if (!orderedHeaders.includes(h) && !excludedCols.includes(h)) orderedHeaders.push(h);
   });
 
   const tableHeaders = orderedHeaders;
@@ -640,7 +642,7 @@ export default function App() {
                   campaign={selectedCampaign}
                   onClose={() => setSelectedCampaign(null)}
                   // Smart fallback: use campaignData only if the campaign exists there, else use productData
-                  allData={modalDataToPass} 
+                  allData={modalDataToPass}
                   datasetMaxDate={datasetMaxDate}
                   formatNum={formatNum}
                   fileName={finalModalFileName}
