@@ -67,7 +67,12 @@ export function DisplayAds({
   };
 
   // Performance table filtered data
-  const perfHeaders = perfData.length > 0 ? Object.keys(perfData[0]) : [];
+  const perfHeaders = perfData.length > 0
+    ? Object.keys(perfData[0]).filter(h => {
+        const lh = h.toLowerCase();
+        return !(lh.includes('order') && lh.includes('sku'));
+      })
+    : [];
   const filteredPerfData = perfSearch
     ? perfData.filter(row => Object.values(row).some(v => v && v.toString().toLowerCase().includes(perfSearch.toLowerCase())))
     : perfData;

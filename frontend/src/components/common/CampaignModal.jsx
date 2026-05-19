@@ -218,7 +218,10 @@ export function CampaignModal({
     if (!orderedHeaders.includes(h) && h !== campCol) orderedHeaders.push(h);
   });
 
-  const tableHeaders = orderedHeaders;
+  const tableHeaders = orderedHeaders.filter(h => {
+    const lh = h.toLowerCase();
+    return !(lh.includes('order') && lh.includes('sku'));
+  });
 
   const stickyColumns = {
     checkbox: { width: 50, left: 0 },
