@@ -2,7 +2,7 @@
 import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { IndianRupee, Eye, MousePointerClick, TrendingUp, BarChart2, Target, LayoutGrid, Info, Download, RefreshCw, Search, FileText } from 'lucide-react';
 import { MetricCard } from '../common/MetricCard';
-import { extractValidDate } from '../../utils/dataHelpers';
+import { extractValidDate, exportToExcel } from '../../utils/dataHelpers';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -130,7 +130,7 @@ export function ProductAds({
               </div>
            </div>
            
-           <button className="p-1.5 border border-border rounded-md hover:bg-white/5 text-text-muted transition-colors">
+           <button onClick={() => exportToExcel(graphData, 'ProductAds_Performance_Summary')} className="p-1.5 border border-border rounded-md hover:bg-white/5 text-text-muted transition-colors">
               <Download className="w-4 h-4" />
            </button>
         </div>
@@ -224,7 +224,7 @@ export function ProductAds({
         </div>
       </div>
 
-      {/* CAMPAIGN DATA TABLE */}
+      {/* PERFORMANCE DATA TABLE */}
       <div className="mt-12 bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
         {/* Table Header / Filters */}
         <div className="px-6 py-5 border-b border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#1C1F26]">
@@ -232,7 +232,7 @@ export function ProductAds({
             <div className="bg-primary/20 p-2 rounded-lg">
               <Target className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-white tracking-wider">CAMPAIGN DATA</h3>
+            <h3 className="text-lg font-bold text-white tracking-wider">PERFORMANCE DATA</h3>
             <div title="Detailed row-level data. Click a campaign name to view its specific analytics." className="cursor-help flex items-center">
               <Info className="w-4 h-4 text-text-muted hover:text-white transition-colors" />
             </div>
@@ -247,7 +247,7 @@ export function ProductAds({
                <button onClick={handleRefresh} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
                  <RefreshCw className="w-4 h-4" />
                </button>
-               <button className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
+               <button onClick={() => exportToExcel(tableData, 'ProductAds_Campaign_Data')} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
                  <Download className="w-4 h-4" />
                </button>
             </div>

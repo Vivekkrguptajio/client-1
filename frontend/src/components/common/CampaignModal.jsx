@@ -3,7 +3,7 @@ import { format, subDays, startOfMonth, subMonths } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Info, Calendar, RefreshCw, Download, Target, Search, FileText, IndianRupee, Eye, MousePointerClick, BarChart2, LayoutGrid, X } from 'lucide-react';
 import CustomCalendar from '../../CustomCalendar';
-import { extractValidDate, findVal } from '../../utils/dataHelpers';
+import { extractValidDate, findVal, exportToExcel } from '../../utils/dataHelpers';
 import { MetricCard } from './MetricCard';
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -209,10 +209,11 @@ export function CampaignModal({
   const rawHeaders = chartFiltered.length > 0 ? Object.keys(chartFiltered[0]) : [];
   const dateCol = rawHeaders.find(h => h.toLowerCase().includes('date') || h.toLowerCase() === 'day');
   const prodCol = rawHeaders.find(h => h.toLowerCase().includes('product') || h.toLowerCase().includes('item') || h.toLowerCase().includes('sku') || h.toLowerCase().includes('asin'));
+  const brandCol = rawHeaders.find(h => h.toLowerCase().includes('brand'));
   const statusCol = rawHeaders.find(h => h.toLowerCase() === 'status');
   const campCol = rawHeaders.find(h => h.toLowerCase().includes('campaign') || h.toLowerCase() === 'name');
 
-  const orderedHeaders = [dateCol, prodCol, statusCol].filter(Boolean);
+  const orderedHeaders = [dateCol, prodCol, brandCol, statusCol].filter(Boolean);
   rawHeaders.forEach(h => {
     if (!orderedHeaders.includes(h) && h !== campCol) orderedHeaders.push(h);
   });
@@ -223,14 +224,15 @@ export function CampaignModal({
     checkbox: { width: 50, left: 0 },
     date: { width: 110 },
     product: { width: 220 },
+    brand: { width: 150 },
     status: { width: 100 }
   };
 
   let currentLeft = 50;
   const stickyStyles = {};
-  [dateCol, prodCol, statusCol].forEach(col => {
+  [dateCol, prodCol, brandCol, statusCol].forEach(col => {
     if (col) {
-      const type = col === dateCol ? 'date' : col === prodCol ? 'product' : 'status';
+      const type = col === dateCol ? 'date' : col === prodCol ? 'product' : col === brandCol ? 'brand' : 'status';
       stickyStyles[col] = {
         position: 'sticky',
         left: currentLeft,
@@ -439,7 +441,7 @@ export function CampaignModal({
                 ))}
               </div>
             </div>
-            <button className="p-1.5 border border-border rounded-md hover:bg-white/5 text-text-muted transition-colors">
+            <button onClick={() => exportToExcel(graphData, 'CampaignModal_Performance_Summary')} className="p-1.5 border border-border rounded-md hover:bg-white/5 text-text-muted transition-colors">
               <Download className="w-4 h-4" />
             </button>
           </div>
@@ -533,14 +535,14 @@ export function CampaignModal({
           </div>
         </div>
 
-        {/* CAMPAIGN DATA TABLE */}
+        {/* PERFORMANCE DATA TABLE */}
         <div className="mt-12 bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
           <div className="px-6 py-5 border-b border-border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#1C1F26]">
             <div className="flex items-center gap-3">
               <div className="bg-primary/20 p-2 rounded-lg">
                 <Target className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-white tracking-wider">CAMPAIGN DATA</h3>
+              <h3 className="text-lg font-bold text-white tracking-wider">PERFORMANCE DATA</h3>
               <div title="Detailed row-level data for this specific campaign." className="cursor-help flex items-center">
                 <Info className="w-4 h-4 text-text-muted hover:text-white transition-colors" />
               </div>
@@ -555,7 +557,7 @@ export function CampaignModal({
                 <button className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
                   <RefreshCw className="w-4 h-4" />
                 </button>
-                <button className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
+                <button onClick={() => exportToExcel(tableData, 'CampaignModal_Data')} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors">
                   <Download className="w-4 h-4" />
                 </button>
               </div>

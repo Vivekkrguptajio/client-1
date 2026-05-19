@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { IndianRupee, Eye, MousePointerClick, TrendingUp, BarChart2, Target, LayoutGrid, Info, Download, RefreshCw, Search, Upload } from 'lucide-react';
 import { MetricCard } from '../common/MetricCard';
-import { extractValidDate } from '../../utils/dataHelpers';
+import { extractValidDate, exportToExcel } from '../../utils/dataHelpers';
 import { formatCellValue } from '../../utils/formatters';
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -118,7 +118,7 @@ export function DisplayAds({
               ))}
             </div>
           </div>
-          <button className="p-1.5 border border-border rounded-md hover:bg-white/5 text-text-muted"><Download className="w-4 h-4" /></button>
+          <button onClick={() => exportToExcel(graphData, 'DisplayAds_Performance_Summary')} className="p-1.5 border border-border rounded-md hover:bg-white/5 text-text-muted"><Download className="w-4 h-4" /></button>
         </div>
         <div className="flex items-center gap-6 mb-4">
           <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#f97316]" /><span className="text-xs text-gray-400">{cardMetrics[0]?.label}</span></div>
@@ -175,7 +175,7 @@ export function DisplayAds({
 
             <div className="flex items-center gap-2">
               <button className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors"><RefreshCw className="w-4 h-4" /></button>
-              <button className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors"><Download className="w-4 h-4" /></button>
+              <button onClick={() => exportToExcel(filteredPerfData, 'DisplayAds_Performance_Table')} className="p-2 rounded-md border border-border hover:bg-white/5 text-text-muted hover:text-white transition-colors"><Download className="w-4 h-4" /></button>
             </div>
 
             {/* Low Performing Toggle */}
